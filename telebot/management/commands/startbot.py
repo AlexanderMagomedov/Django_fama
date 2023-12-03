@@ -17,7 +17,8 @@ class Command(BaseCommand):
             config: Config = load_config()
 
             # Инициализируем бот и диспетчер
-            bot = Bot(token=config.tg_bot.token)
+            bot = Bot(token=config.tg_bot.token,
+                      parse_mode='HTML')
             dp = Dispatcher()
 
             # Регистриуем роутеры в диспетчере
