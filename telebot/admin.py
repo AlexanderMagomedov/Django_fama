@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from telebot.models import Books
+from telebot.models import Book
 
-admin.site.register(Books)
+admin.site.register(Book)
