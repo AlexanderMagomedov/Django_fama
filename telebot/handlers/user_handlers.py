@@ -2,13 +2,10 @@ from aiogram import F, Router
 from aiogram.filters import Command, CommandStart
 from aiogram.types import CallbackQuery, Message
 
-from telebot import books
+from telebot.books.book_list import page_list
 from telebot.keyboards.keyboards import create_back_keyboard, create_story_list_keyboard
 from telebot.keyboards.main_menu import create_menu_keyboard
 from telebot.keyboards.help_key import create_help_keyboard
-from telebot.lexicon.book_name import book_name
-
-from telebot.filters.filters import IsStory
 from telebot.lexicon.lexicon_ru import LEXICON_RU
 
 
@@ -40,7 +37,8 @@ async def process_help_command(message: Message):
 # и отправлять пользователю список сказок в виде инлайн кнопок
 @router.message(Command(commands='read'))
 async def process_read_command(message: Message):
-    await message.answer(LEXICON_RU[message.text], reply_markup=create_story_list_keyboard())
+    start = page_list()[0]
+    await message.answer(LEXICON_RU[message.text], reply_markup=create_story_list_keyboard(start))
 
 
 # Этот хэндлер будет срабатывать на нажатие инлайн-кнопки
@@ -60,14 +58,6 @@ async def process_about_me(callback: CallbackQuery):
 
 
 # Этот хэндлер будет срабатывать на нажатие инлайн-кнопки
-# "Настройки" в главном меню
-#@router.callback_query(F.data == '/settings')
-#async def process_cancel_press(callback: CallbackQuery):
-#    await callback.message.edit_text(text=LEXICON_RU['/settings'], reply_markup=create_back_keyboard())
-#    await callback.answer()
-
-
-# Этот хэндлер будет срабатывать на нажатие инлайн-кнопки
 # "Поддержка" в главном меню показывает сообщение и клавиатуру меню "Поддержка"
 @router.callback_query(F.data == '/help')
 async def process_help(callback: CallbackQuery):
@@ -79,9 +69,10 @@ async def process_help(callback: CallbackQuery):
 # "Читаем сказку" в главном меню
 @router.callback_query(F.data == '/read')
 async def process_read(callback: CallbackQuery):
+    start = page_list()[0]
     await callback.message.edit_text(
         text=LEXICON_RU['/read'],
-        reply_markup=create_story_list_keyboard())
+        reply_markup=create_story_list_keyboard(start))
     await callback.answer()
 
 
@@ -113,3 +104,5 @@ async def process_payment(callback: CallbackQuery):
 #                                                 getattr(books, book_name[callback.data]).book['Начало']['button1'],
 #                                                 getattr(books, book_name[callback.data]).book['Начало']['button2']))
 #     await callback.answer()
+
+
