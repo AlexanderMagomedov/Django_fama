@@ -37,7 +37,7 @@ async def process_help_command(message: Message):
 # и отправлять пользователю список сказок в виде инлайн кнопок
 @router.message(Command(commands='read'))
 async def process_read_command(message: Message):
-    start = page_list()[0]
+    start = 0
     await message.answer(LEXICON_RU[message.text], reply_markup=create_story_list_keyboard(start))
 
 
@@ -69,7 +69,7 @@ async def process_help(callback: CallbackQuery):
 # "Читаем сказку" в главном меню
 @router.callback_query(F.data == '/read')
 async def process_read(callback: CallbackQuery):
-    start = page_list()[0]
+    start = 0
     await callback.message.edit_text(
         text=LEXICON_RU['/read'],
         reply_markup=create_story_list_keyboard(start))
@@ -88,6 +88,15 @@ async def process_email(callback: CallbackQuery):
 # Этот хэндлер будет срабатывать на нажатие инлайн-кнопки
 # "Оплатить" в меню "Поддержка" выводить почту и кнопку "назад"
 @router.callback_query(F.data == 'payment')
+async def process_payment(callback: CallbackQuery):
+    await callback.message.edit_text(
+        text=LEXICON_RU['payment'], reply_markup=create_back_keyboard('/help'))
+    await callback.answer()
+
+
+# Этот хэндлер будет срабатывать на нажатие инлайн-кнопки
+# ">>" в меню выбора сказки
+@router.callback_query(F.data == 'forward')
 async def process_payment(callback: CallbackQuery):
     await callback.message.edit_text(
         text=LEXICON_RU['payment'], reply_markup=create_back_keyboard('/help'))

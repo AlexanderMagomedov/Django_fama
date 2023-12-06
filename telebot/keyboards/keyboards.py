@@ -1,8 +1,7 @@
-import sqlite3
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from telebot.lexicon.lexicon_ru import LEXICON_RU
-from telegram_bot_pagination import InlineKeyboardPaginator
+from telebot.books.book_list import page_list
 
 
 # Функция создания инлайн кнопки "Назад" в главном меню
@@ -17,13 +16,13 @@ def create_back_keyboard(arg) -> InlineKeyboardMarkup:
 
 
 # Функция создания инлайн кнопкок со списком сказок
-def create_story_list_keyboard(arg) -> InlineKeyboardMarkup:
+def create_story_list_keyboard(page) -> InlineKeyboardMarkup:
     # Создаем объект клавиатуры
     kb_builder = InlineKeyboardBuilder()
     # Наполняем клавиатуру кнопками-закладками
     kb_builder.row(*[InlineKeyboardButton(
         text=story_name,
-        callback_data=story_name) for story_name in arg], width=1)
+        callback_data=story_name) for story_name in page_list()[page]], width=1)
     kb_builder.row(*[InlineKeyboardButton(
         text=text,
         callback_data=comand)
