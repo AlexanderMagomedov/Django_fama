@@ -1,11 +1,12 @@
 from aiogram import F, Router
 from aiogram.types import CallbackQuery
-
-from telebot.books.book_list import page_list
-from telebot.keyboards.keyboards import create_back_keyboard, create_story_list_keyboard
+from telebot.books.book_list import page_list, give_all_book_text, page_book
+from telebot.filters.filters import IsStory
+from telebot.keyboards.keyboards import create_back_keyboard, create_story_list_keyboard, create_story_keyboard
 from telebot.keyboards.main_menu import create_menu_keyboard
 from telebot.keyboards.help_key import create_help_keyboard
 from telebot.lexicon.lexicon_ru import LEXICON_RU
+from telebot.models import Book
 
 router = Router()
 
@@ -89,13 +90,14 @@ async def process_payment(callback: CallbackQuery):
     await callback.answer()
 
 
-# # Этот хэндлер будет срабатывать на нажатие инлайн-кнопки
-# # в списке доступных сказок
-# @router.callback_query(IsStory())
-# async def process_cancel_press(callback: CallbackQuery):
-#     await callback.message.edit_text(
-#         text=getattr(books, book_name[callback.data]).book['Начало']['text'],
-#         reply_markup=create_pagination_keyboard(getattr(books, book_name[callback.data]).book['Начало']['effect'],
-#                                                 getattr(books, book_name[callback.data]).book['Начало']['button1'],
-#                                                 getattr(books, book_name[callback.data]).book['Начало']['button2']))
-#     await callback.answer()
+# Этот хэндлер будет срабатывать на нажатие инлайн-кнопки
+# в списке доступных сказок Запускать первую страницу сказки
+@router.callback_query(IsStory())
+async def process_cancel_press(callback: CallbackQuery):
+    start = 0
+    await callback.message.edit_text(
+        text=page_book(callback.data)[start],
+        reply_markup=create_story_keyboard(start))
+    await callback.answer()
+
+
