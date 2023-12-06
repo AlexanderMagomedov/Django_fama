@@ -26,7 +26,7 @@ def create_story_list_keyboard(page) -> InlineKeyboardMarkup:
     kb_builder.row(*[InlineKeyboardButton(
         text=text,
         callback_data=comand)
-        for text, comand in ((LEXICON_RU['backward'], 'backward'), (LEXICON_RU['forward'], 'forward'))], width=2)
+        for text, comand in ((LEXICON_RU['backward'], (f'backward {page}')), (LEXICON_RU['forward'], (f'forward {page}')))], width=2)
     kb_builder.row(InlineKeyboardButton(
         text=LEXICON_RU['back'],
         callback_data='/start'))

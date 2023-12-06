@@ -1,14 +1,13 @@
 from aiogram import F, Router
 from aiogram.types import CallbackQuery
+
+from telebot.books.book_list import page_list
 from telebot.keyboards.keyboards import create_back_keyboard, create_story_list_keyboard
 from telebot.keyboards.main_menu import create_menu_keyboard
 from telebot.keyboards.help_key import create_help_keyboard
 from telebot.lexicon.lexicon_ru import LEXICON_RU
 
-
 router = Router()
-
-
 
 
 # Этот хэндлер будет срабатывать на нажатие инлайн-кнопки
@@ -66,10 +65,27 @@ async def process_payment(callback: CallbackQuery):
 
 # Этот хэндлер будет срабатывать на нажатие инлайн-кнопки
 # ">>" в меню выбора сказки
-@router.callback_query(F.data == 'forward')
+@router.callback_query((F.data).split()[0] == 'forward')
 async def process_payment(callback: CallbackQuery):
+    page = int(callback.data.split()[1]) + 1
+    if page == len(page_list()):
+        page = 0
     await callback.message.edit_text(
-        text=LEXICON_RU['payment'], reply_markup=create_back_keyboard('/help'))
+        text=LEXICON_RU['/read'],
+        reply_markup=create_story_list_keyboard(page))
+    await callback.answer()
+
+
+# Этот хэндлер будет срабатывать на нажатие инлайн-кнопки
+# "<<" в меню выбора сказки
+@router.callback_query((F.data).split()[0] == 'backward')
+async def process_payment(callback: CallbackQuery):
+    page = int(callback.data.split()[1]) - 1
+    if page < 0:
+        page = len(page_list()) - 1
+    await callback.message.edit_text(
+        text=LEXICON_RU['/read'],
+        reply_markup=create_story_list_keyboard(page))
     await callback.answer()
 
 
