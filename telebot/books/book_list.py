@@ -1,7 +1,7 @@
 import sqlite3
 
 PAGE_SIZE = 5
-PAGE_BOOK_SIZE = 50
+PAGE_BOOK_SIZE = 100
 
 
 # Функция возвращающая полный список сказок
@@ -21,6 +21,7 @@ def page_list():
         book_list_pages[i] = book_list_all[i*PAGE_SIZE:(i+1)*PAGE_SIZE]
     return book_list_pages
 
+
 def give_all_book_text(book_name):
     connect = sqlite3.connect('db.sqlite3')
     cursor = connect.cursor()
@@ -29,9 +30,10 @@ def give_all_book_text(book_name):
     connect.close()
     return book_text[0][0]
 
+
 def page_book(book_name):
-    book_text = give_all_book_text(book_name)
+    book_text = give_all_book_text(book_name).split()
     book_pages = {}
     for i in range(len(book_text)//PAGE_BOOK_SIZE + 1):
-        book_pages[i] = book_pages[i*PAGE_BOOK_SIZE:(i+1)*PAGE_BOOK_SIZE]
+        book_pages[i] = ' '.join(book_text[i*PAGE_BOOK_SIZE:(i+1)*PAGE_BOOK_SIZE])
     return book_pages

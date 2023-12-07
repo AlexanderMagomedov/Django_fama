@@ -101,3 +101,27 @@ async def process_cancel_press(callback: CallbackQuery):
     await callback.answer()
 
 
+# Этот хэндлер будет срабатывать на нажатие инлайн-кнопки
+# ">>" во время просмотра сказки
+@router.callback_query((F.data).split()[0] == 'fstory')
+async def process_payment(callback: CallbackQuery):
+    page = int(callback.data.split()[1])
+    if page < len(page_book(callback.data))-1:
+        page += 1
+        await callback.message.edit_text(
+            text=page_book(callback.data)[page],
+            reply_markup=create_story_keyboard(page))
+    await callback.answer()
+
+
+# Этот хэндлер будет срабатывать на нажатие инлайн-кнопки
+# "<<" во время просмотра сказки
+@router.callback_query((F.data).split()[0] == 'bstory')
+async def process_payment(callback: CallbackQuery):
+    page = int(callback.data.split()[1])
+    if page > 0:
+        page -= 1
+        await callback.message.edit_text(
+            text=page_book(callback.data)[page],
+            reply_markup=create_story_keyboard(page))
+    await callback.answer()
