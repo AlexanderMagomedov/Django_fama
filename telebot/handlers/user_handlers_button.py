@@ -97,7 +97,7 @@ async def process_cancel_press(callback: CallbackQuery):
     start = 0
     await callback.message.edit_text(
         text=page_book(callback.data)[start],
-        reply_markup=create_story_keyboard(start))
+        reply_markup=create_story_keyboard(start, callback.data))
     await callback.answer()
 
 
@@ -106,11 +106,12 @@ async def process_cancel_press(callback: CallbackQuery):
 @router.callback_query((F.data).split()[0] == 'fstory')
 async def process_payment(callback: CallbackQuery):
     page = int(callback.data.split()[1])
-    if page < len(page_book(callback.data))-1:
+    book_name = ' '.join(callback.data.split()[2:])
+    if page < len(page_book(book_name))-1:
         page += 1
         await callback.message.edit_text(
-            text=page_book(callback.data)[page],
-            reply_markup=create_story_keyboard(page))
+            text=page_book(book_name)[page],
+            reply_markup=create_story_keyboard(page, book_name))
     await callback.answer()
 
 
@@ -119,9 +120,10 @@ async def process_payment(callback: CallbackQuery):
 @router.callback_query((F.data).split()[0] == 'bstory')
 async def process_payment(callback: CallbackQuery):
     page = int(callback.data.split()[1])
+    book_name = ' '.join(callback.data.split()[2:])
     if page > 0:
         page -= 1
         await callback.message.edit_text(
-            text=page_book(callback.data)[page],
-            reply_markup=create_story_keyboard(page))
+            text=page_book(book_name)[page],
+            reply_markup=create_story_keyboard(page, book_name))
     await callback.answer()

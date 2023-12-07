@@ -33,14 +33,17 @@ def create_story_list_keyboard(page) -> InlineKeyboardMarkup:
     return kb_builder.as_markup()
 
 
-def create_story_keyboard(page) -> InlineKeyboardMarkup:
+def create_story_keyboard(page, book_name) -> InlineKeyboardMarkup:
     # Создаем объект клавиатуры
     kb_builder = InlineKeyboardBuilder()
     # Наполняем клавиатуру кнопками-закладками
     kb_builder.row(*[InlineKeyboardButton(
         text=text,
         callback_data=comand)
-        for text, comand in ((LEXICON_RU['backward'], (f'bstory {page}')), (LEXICON_RU['forward'], (f'fstory {page}')))], width=2)
+        for text, comand in ((LEXICON_RU['backward'],
+                              (f'bstory {page} {book_name}')),
+                             (LEXICON_RU['forward'],
+                              (f'fstory {page} {book_name}')))], width=2)
     kb_builder.row(InlineKeyboardButton(
         text=LEXICON_RU['back'],
         callback_data='/read'))

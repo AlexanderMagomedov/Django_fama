@@ -1,7 +1,7 @@
 import sqlite3
 
 PAGE_SIZE = 5
-PAGE_BOOK_SIZE = 100
+PAGE_BOOK_SIZE = 65
 
 
 # Функция возвращающая полный список сказок
@@ -25,7 +25,7 @@ def page_list():
 def give_all_book_text(book_name):
     connect = sqlite3.connect('db.sqlite3')
     cursor = connect.cursor()
-    cursor.execute("SELECT book_text FROM telebot_book WHERE book_name = 'Звездные приключения Фрога.'")
+    cursor.execute(f"SELECT book_text FROM telebot_book WHERE book_name = '{book_name}'")
     book_text = cursor.fetchall()
     connect.close()
     return book_text[0][0]
